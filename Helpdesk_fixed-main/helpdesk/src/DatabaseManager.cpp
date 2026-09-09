@@ -1,6 +1,7 @@
 #include "DatabaseManager.h"
 #include "DateUtil.h"
 #include "Validation.h"
+#include "PasswordHasher.h"
 #include <iostream>
 #include <cstring>
 
@@ -147,11 +148,24 @@ void DatabaseManager::initializeSchema() {
 
         // Seed a default admin account if the users table is empty so the
         // application is usable on first run without manual SQL setup.
-        execute(
-            "INSERT INTO users (name, username, password, email, role) "
-            "SELECT 'System Administrator', 'admin', 'admin123', 'admin@company.com', 'ADMIN' "
-            "WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');"
-        );
+        if (!usernameExists("admin")) {
+            std::string adminHash = PasswordHasher::hashPassword("admin123");
+            const char* adminSql = "INSERT INTO users (name, username, password, email, role) VALUES (?,?,?,?,?);";
+            sqlite3_stmt* stmt = nullptr;
+            if (sqlite3_prepare_v2(db, adminSql, -1, &stmt, nullptr) != SQLITE_OK) {
+                throw DatabaseException(std::string("Failed to prepare seed admin statement: ") + sqlite3_errmsg(db));
+            }
+            sqlite3_bind_text(stmt, 1, "System Administrator", -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 2, "admin", -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 3, adminHash.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(stmt, 4, "admin@company.com", -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 5, "ADMIN", -1, SQLITE_STATIC);
+            int rc = sqlite3_step(stmt);
+            sqlite3_finalize(stmt);
+            if (rc != SQLITE_DONE) {
+                throw DatabaseException(std::string("Failed to seed admin account: ") + sqlite3_errmsg(db));
+            }
+        }
     } catch (const DatabaseException& ex) {
         throw DatabaseException(std::string("Schema initialization failed: ") + ex.what());
     }
@@ -188,9 +202,10 @@ int DatabaseManager::addUser(const std::string& name, const std::string& usernam
         throw DatabaseException(std::string("Failed to prepare addUser statement: ") + sqlite3_errmsg(db));
     }
 
+    std::string hashedPassword = PasswordHasher::hashPassword(password);
     sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, username.c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, password.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, hashedPassword.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 4, email.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 5, roleToString(role).c_str(), -1, SQLITE_TRANSIENT);
 
@@ -267,11 +282,8 @@ UserRecord DatabaseManager::authenticate(const std::string& username, const std:
     }
     sqlite3_finalize(stmt);
 
-    if (!found) {
-        throw AuthenticationException("No such username: " + username);
-    }
-    if (rec.password != password) {
-        throw AuthenticationException("Incorrect password for username: " + username);
+    if (!found || !PasswordHasher::verifyPassword(password, rec.password)) {
+        throw AuthenticationException("Invalid username or password.");
     }
     return rec;
 }

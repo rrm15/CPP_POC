@@ -21,6 +21,7 @@ option(HELPDESK_SANITIZE "Build with AddressSanitizer + UndefinedBehaviorSanitiz
 option(HELPDESK_BUILD_TESTS "Build the GoogleTest-based test suites" ON)
 
 find_package(SQLite3 REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 # ---------------------------------------------------------------------------
 # helpdesk_core: all domain/service/repository logic, with NO main().
@@ -32,15 +33,16 @@ add_library(helpdesk_core STATIC
     src/Ticket.cpp
     src/User.cpp
     src/DatabaseManager.cpp
+    src/PasswordHasher.cpp
     src/PasswordInput.cpp
     src/Validation.cpp
 )
 target_include_directories(helpdesk_core PUBLIC include ${SQLite3_INCLUDE_DIRS})
-target_link_libraries(helpdesk_core PUBLIC ${SQLite3_LIBRARIES})
+target_link_libraries(helpdesk_core PUBLIC ${SQLite3_LIBRARIES} OpenSSL::Crypto)
 target_compile_options(helpdesk_core PRIVATE -Wall -Wextra)
 
 if(HELPDESK_COVERAGE)
-  target_compile_options(helpdesk_core PUBLIC -O0 -g --coverage -fprofile-arcs -ftest-coverage)
+  target_compile_options(helpdesk_core PUBLIC -O0 -g --coverage)
   target_link_options(helpdesk_core PUBLIC --coverage)
 endif()
 
@@ -57,7 +59,7 @@ target_link_libraries(helpdesk PRIVATE helpdesk_core)
 target_compile_options(helpdesk PRIVATE -Wall -Wextra)
 
 if(HELPDESK_COVERAGE)
-  target_compile_options(helpdesk PRIVATE -O0 -g --coverage -fprofile-arcs -ftest-coverage)
+  target_compile_options(helpdesk PRIVATE -O0 -g --coverage)
   target_link_options(helpdesk PRIVATE --coverage)
 endif()
 if(HELPDESK_SANITIZE)
@@ -173,7 +175,7 @@ if(HELPDESK_BUILD_TESTS)
       target_compile_options(helpdesk_${suite_name}_tests PRIVATE -Wall -Wextra)
 
       if(HELPDESK_COVERAGE)
-        target_compile_options(helpdesk_${suite_name}_tests PRIVATE -O0 -g --coverage -fprofile-arcs -ftest-coverage)
+        target_compile_options(helpdesk_${suite_name}_tests PRIVATE -O0 -g --coverage)
         target_link_options(helpdesk_${suite_name}_tests PRIVATE --coverage)
       endif()
       if(HELPDESK_SANITIZE)

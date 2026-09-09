@@ -39,7 +39,7 @@ public:
 
     // Password check kept inside the class rather than exposing the
     // raw password field to callers.
-    bool checkPassword(const std::string& attempt) const { return attempt == password; }
+    bool checkPassword(const std::string& attempt) const;
 
     void setId(int newId) { id = newId; }
 

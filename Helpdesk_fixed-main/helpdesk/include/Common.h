@@ -173,8 +173,8 @@ public:
 // Thrown when authentication (login) fails.
 class AuthenticationException : public AppException {
 public:
-    explicit AuthenticationException(const std::string& message)
-        : AppException("Authentication Error: " + message) {}
+    explicit AuthenticationException(const std::string& message = "Invalid username or password.")
+        : AppException(message) {}
 };
 
 // Thrown when SQLite returns SQLITE_BUSY or SQLITE_LOCKED.

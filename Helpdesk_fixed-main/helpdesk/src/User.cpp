@@ -3,6 +3,7 @@
 #include "InputUtil.h"
 #include "Validation.h"
 #include "PasswordInput.h"
+#include "PasswordHasher.h"
 #include <iostream>
 #include <iomanip>
 
@@ -12,6 +13,10 @@
 User::User(int id, const std::string& name, const std::string& username,
            const std::string& password, const std::string& email, UserRole role)
     : id(id), name(name), username(username), password(password), email(email), role(role) {}
+
+bool User::checkPassword(const std::string& attempt) const {
+    return PasswordHasher::verifyPassword(attempt, password);
+}
 
 void User::displayInfo() const {
     std::cout << "Name: " << name << " | Username: " << username

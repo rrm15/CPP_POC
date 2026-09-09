@@ -71,7 +71,7 @@ static std::unique_ptr<User> loginFlow(DatabaseManager& db) {
                   << " (" << roleToString(rec.role) << ")!\n";
         return makeUser(rec);
     } catch (const AuthenticationException& ex) {
-        std::cout << "[Login Failed] " << ex.what() << "\n";
+        std::cout << ex.what() << "\n";
         return nullptr;
     }
 }
