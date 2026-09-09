@@ -177,6 +177,16 @@ public:
         : AppException("Authentication Error: " + message) {}
 };
 
+// Thrown when SQLite returns SQLITE_BUSY or SQLITE_LOCKED.
+// Signals a temporary write conflict -- the caller should display a
+// retry message and return to the menu without crashing or retrying.
+class LockConflictException : public AppException {
+public:
+    explicit LockConflictException()
+        : AppException("The database is currently being updated by another session.\n"
+                       "Refresh the data and retry.") {}
+};
+
 // Thrown when a requested record (user/ticket) cannot be found.
 class NotFoundException : public AppException {
 public:

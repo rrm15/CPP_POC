@@ -12,7 +12,6 @@
 
 #include <iostream>
 #include <memory>
-#include <sqlite3.h>
 #include "DatabaseManager.h"
 #include "User.h"
 #include "InputUtil.h"
@@ -78,19 +77,6 @@ static std::unique_ptr<User> loginFlow(DatabaseManager& db) {
 }
 
 int main() {
-    // This application is genuinely single-threaded end to end (no
-    // std::thread/pthread is ever created), and no DatabaseManager /
-    // sqlite3 connection is ever shared across threads. Telling SQLite
-    // that up front lets it skip its internal mutex bookkeeping entirely,
-    // which is both a legitimate perf win and eliminates a class of
-    // Helgrind false positives (SQLite's mutex does its own recursion
-    // tracking on top of a plain pthread mutex in a way Helgrind's
-    // interceptor misreads as an illegal recursive lock). This MUST run
-    // before the first sqlite3 API call anywhere in the process --
-    // sqlite3_config() only succeeds prior to SQLite's implicit
-    // first-use initialization.
-    sqlite3_config(SQLITE_CONFIG_SINGLETHREAD);
-
     printBanner();
 
     // The DatabaseManager owns the sqlite3 connection for the whole

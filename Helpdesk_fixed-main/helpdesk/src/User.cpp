@@ -123,6 +123,8 @@ void Engineer::showMenu(DatabaseManager& db) {
                 case 5: running = false; break;
                 default: std::cout << "Invalid choice.\n";
             }
+        } catch (const LockConflictException& ex) {
+            std::cout << "[Conflict] " << ex.what() << "\n";
         } catch (const AppException& ex) {
             std::cout << "[Error] " << ex.what() << "\n";
         }
@@ -162,31 +164,48 @@ void Engineer::updateStatusFlow(DatabaseManager& db) {
         throw ValidationException("This ticket is not assigned to you.");
     }
     std::cout << "Current status: " << statusToString(ticket.getStatus()) << "\n";
-    std::cout << "Select new status:\n"
-              << "  1. ASSIGNED\n  2. IN_PROGRESS\n  3. RESOLVED (use option 3 in the main menu instead)\n";
-    int choice = InputUtil::readInt("Choice: ");
-    switch (choice) {
-        case 1: ticket.updateStatus(TicketStatus::ASSIGNED); break;
-        case 2: ticket.updateStatus(TicketStatus::IN_PROGRESS); break;
-        default:
-            std::cout << "Use the 'Resolve a ticket' menu option to mark a ticket resolved.\n";
-            return;
+    std::cout << "Move to IN_PROGRESS? (1=Yes, other=Cancel): ";
+    int choice = InputUtil::readInt("");
+    if (choice != 1) {
+        std::cout << "Cancelled.\n";
+        return;
     }
-    db.updateTicket(ticket);
-    std::cout << "Ticket status updated.\n";
+    // Atomic: only succeeds if engineer still owns this ticket and it is
+    // still ASSIGNED. Zero rows changed means stale data (already moved
+    // or re-assigned by another session).
+    bool changed = db.atomicUpdateStatusInProgress(ticketId, id);
+    if (!changed) {
+        std::cout << "Ticket could not be updated. It may have already changed status "
+                     "or been re-assigned. Please refresh and retry.\n";
+    } else {
+        std::cout << "Ticket status moved to IN_PROGRESS.\n";
+    }
 }
 
 void Engineer::resolveTicketFlow(DatabaseManager& db) {
     std::cout << "\n-- Resolve Ticket --\n";
     int ticketId = InputUtil::readInt("Enter Ticket ID: ");
+    // Verify ownership before asking for notes (avoids wasted input).
     Ticket ticket = db.getTicketById(ticketId);
     if (ticket.getAssignedEngineerId() != id) {
         throw ValidationException("This ticket is not assigned to you.");
     }
+    if (ticket.getStatus() == TicketStatus::RESOLVED ||
+        ticket.getStatus() == TicketStatus::CLOSED) {
+        std::cout << "Ticket #" << ticketId << " is already resolved.\n";
+        return;
+    }
     std::string notes = InputUtil::readNonEmptyLine("Resolution notes: ");
-    ticket.resolve(notes);
-    db.updateTicket(ticket);
-    std::cout << "Ticket #" << ticketId << " marked as RESOLVED.\n";
+    // Atomic: only resolves if this engineer still owns the ticket and
+    // status is ASSIGNED or IN_PROGRESS. Guards against repeated calls
+    // and wrong-engineer attempts at the database level.
+    bool changed = db.atomicResolveTicket(ticketId, id, notes);
+    if (!changed) {
+        std::cout << "Ticket could not be resolved. It may have already been resolved, "
+                     "re-assigned, or does not exist. Refresh and retry.\n";
+    } else {
+        std::cout << "Ticket #" << ticketId << " marked as RESOLVED.\n";
+    }
 }
 
 // =======================================================================
@@ -217,6 +236,8 @@ void Admin::showMenu(DatabaseManager& db) {
                 case 6: running = false; break;
                 default: std::cout << "Invalid choice.\n";
             }
+        } catch (const LockConflictException& ex) {
+            std::cout << "[Conflict] " << ex.what() << "\n";
         } catch (const AppException& ex) {
             std::cout << "[Error] " << ex.what() << "\n";
         }
@@ -253,7 +274,6 @@ void Admin::assignTicketFlow(DatabaseManager& db) {
     for (const auto& t : openTickets) t.display();
 
     int ticketId = InputUtil::readInt("Enter Ticket ID to assign: ");
-    Ticket ticket = db.getTicketById(ticketId);
 
     auto engineers = db.getUsersByRole(UserRole::ENGINEER);
     if (engineers.empty()) {
@@ -266,9 +286,16 @@ void Admin::assignTicketFlow(DatabaseManager& db) {
     }
     int engineerId = InputUtil::readInt("Enter Engineer ID to assign this ticket to: ");
 
-    ticket.assignTo(engineerId);
-    db.updateTicket(ticket);
-    std::cout << "Ticket #" << ticketId << " assigned to Engineer #" << engineerId << ".\n";
+    // Atomic: only assigns when ticket is still OPEN and unassigned.
+    // Guards against a second admin session racing to assign the same ticket.
+    bool changed = db.atomicAssignTicket(ticketId, engineerId);
+    if (!changed) {
+        std::cout << "Ticket #" << ticketId
+                  << " could not be assigned. It may already be assigned, "
+                     "no longer OPEN, or may not exist. Refresh the list and retry.\n";
+    } else {
+        std::cout << "Ticket #" << ticketId << " assigned to Engineer #" << engineerId << ".\n";
+    }
 }
 
 void Admin::manageUsersFlow(DatabaseManager& db) {

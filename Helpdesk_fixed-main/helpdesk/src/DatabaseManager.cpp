@@ -4,6 +4,14 @@
 #include <iostream>
 #include <cstring>
 
+// Maps SQLITE_BUSY / SQLITE_LOCKED to a LockConflictException so callers
+// never have to inspect raw SQLite return codes for lock conditions.
+static void throwIfLockConflict(int rc) {
+    if (rc == SQLITE_BUSY || rc == SQLITE_LOCKED) {
+        throw LockConflictException();
+    }
+}
+
 DatabaseManager::DatabaseManager(const std::string& path)
     : db(nullptr), dbPath(path) {}
 
@@ -12,13 +20,37 @@ DatabaseManager::~DatabaseManager() {
 }
 
 void DatabaseManager::connect() {
-    int rc = sqlite3_open(dbPath.c_str(), &db);
+    // SQLITE_OPEN_FULLMUTEX: serialized threading mode -- SQLite serializes
+    // all database access through a single mutex per connection. Required
+    // even in single-process use when multiple logical sessions share state
+    // via separate DatabaseManager instances on the same file.
+    int rc = sqlite3_open_v2(
+        dbPath.c_str(),
+        &db,
+        SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
+        nullptr
+    );
     if (rc != SQLITE_OK) {
+        // Capture the error before closing; sqlite3_errmsg() is only valid
+        // while the handle is open.
         std::string msg = db ? sqlite3_errmsg(db) : "unknown error";
+        if (db) {
+            sqlite3_close(db);
+            db = nullptr;
+        }
         throw DatabaseException("Could not open database '" + dbPath + "': " + msg);
     }
     // Enforce foreign key constraints (off by default in SQLite).
-    execute("PRAGMA foreign_keys = ON;");
+    // This must succeed; a failure here indicates a misconfigured build.
+    char* errMsg = nullptr;
+    rc = sqlite3_exec(db, "PRAGMA foreign_keys = ON;", nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::string msg = errMsg ? errMsg : "unknown error";
+        sqlite3_free(errMsg);
+        sqlite3_close(db);
+        db = nullptr;
+        throw DatabaseException("PRAGMA foreign_keys = ON failed: " + msg);
+    }
 }
 
 void DatabaseManager::close() {
@@ -26,6 +58,21 @@ void DatabaseManager::close() {
         sqlite3_close(db);
         db = nullptr;
     }
+}
+
+bool DatabaseManager::beginTransaction() {
+    execute("BEGIN IMMEDIATE;");
+    return true;
+}
+
+bool DatabaseManager::commit() {
+    execute("COMMIT;");
+    return true;
+}
+
+bool DatabaseManager::rollback() {
+    execute("ROLLBACK;");
+    return true;
 }
 
 void DatabaseManager::execute(const std::string& sql) {
@@ -37,6 +84,7 @@ void DatabaseManager::execute(const std::string& sql) {
         throw DatabaseException("Failed executing statement: " + msg);
     }
 }
+
 
 void DatabaseManager::initializeSchema() {
     try {
@@ -603,4 +651,110 @@ int DatabaseManager::getTotalTicketCount() {
     }
     sqlite3_finalize(stmt);
     return count;
+}
+
+// ---------------------------------------------------------------------
+// Atomic conditional writes
+// ---------------------------------------------------------------------
+
+// Assigns the ticket to engineerId only when:
+//   - status = 'OPEN'
+//   - assigned_engineer_id IS NULL
+// Uses sqlite3_changes() to detect whether the row was actually modified.
+// Throws LockConflictException when SQLite signals a write conflict.
+bool DatabaseManager::atomicAssignTicket(int ticketId, int engineerId) {
+    const char* sql =
+        "UPDATE tickets "
+        "SET assigned_engineer_id = ?, "
+        "    status = ?, "
+        "    updated_at = CURRENT_TIMESTAMP "
+        "WHERE id = ? "
+        "  AND status = ? "
+        "  AND assigned_engineer_id IS NULL;";
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw DatabaseException(std::string("atomicAssignTicket prepare failed: ") + sqlite3_errmsg(db));
+    }
+    std::string assignedStatus = statusToString(TicketStatus::ASSIGNED);
+    std::string openStatus     = statusToString(TicketStatus::OPEN);
+    sqlite3_bind_int (stmt, 1, engineerId);
+    sqlite3_bind_text(stmt, 2, assignedStatus.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int (stmt, 3, ticketId);
+    sqlite3_bind_text(stmt, 4, openStatus.c_str(),     -1, SQLITE_TRANSIENT);
+
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    throwIfLockConflict(rc);
+    if (rc != SQLITE_DONE) {
+        throw DatabaseException(std::string("atomicAssignTicket step failed: ") + sqlite3_errmsg(db));
+    }
+    return sqlite3_changes(db) == 1;
+}
+
+// Moves the ticket to IN_PROGRESS only when:
+//   - assigned_engineer_id = engineerId  (correct engineer)
+//   - status = 'ASSIGNED'
+bool DatabaseManager::atomicUpdateStatusInProgress(int ticketId, int engineerId) {
+    const char* sql =
+        "UPDATE tickets "
+        "SET status = ?, "
+        "    updated_at = CURRENT_TIMESTAMP "
+        "WHERE id = ? "
+        "  AND assigned_engineer_id = ? "
+        "  AND status = ?;";
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw DatabaseException(std::string("atomicUpdateStatusInProgress prepare failed: ") + sqlite3_errmsg(db));
+    }
+    std::string inProgressStatus = statusToString(TicketStatus::IN_PROGRESS);
+    std::string assignedStatus   = statusToString(TicketStatus::ASSIGNED);
+    sqlite3_bind_text(stmt, 1, inProgressStatus.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int (stmt, 2, ticketId);
+    sqlite3_bind_int (stmt, 3, engineerId);
+    sqlite3_bind_text(stmt, 4, assignedStatus.c_str(),   -1, SQLITE_TRANSIENT);
+
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    throwIfLockConflict(rc);
+    if (rc != SQLITE_DONE) {
+        throw DatabaseException(std::string("atomicUpdateStatusInProgress step failed: ") + sqlite3_errmsg(db));
+    }
+    return sqlite3_changes(db) == 1;
+}
+
+// Resolves the ticket only when:
+//   - assigned_engineer_id = engineerId  (correct engineer)
+//   - status IN ('ASSIGNED', 'IN_PROGRESS')  (not already resolved)
+// Resolution text is never overwritten once written.
+bool DatabaseManager::atomicResolveTicket(int ticketId, int engineerId,
+                                          const std::string& resolutionNotes) {
+    const char* sql =
+        "UPDATE tickets "
+        "SET status = ?, "
+        "    resolution_notes = ?, "
+        "    updated_at = CURRENT_TIMESTAMP "
+        "WHERE id = ? "
+        "  AND assigned_engineer_id = ? "
+        "  AND status IN (?, ?);";
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw DatabaseException(std::string("atomicResolveTicket prepare failed: ") + sqlite3_errmsg(db));
+    }
+    std::string resolvedStatus   = statusToString(TicketStatus::RESOLVED);
+    std::string assignedStatus   = statusToString(TicketStatus::ASSIGNED);
+    std::string inProgressStatus = statusToString(TicketStatus::IN_PROGRESS);
+    sqlite3_bind_text(stmt, 1, resolvedStatus.c_str(),   -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, resolutionNotes.c_str(),  -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int (stmt, 3, ticketId);
+    sqlite3_bind_int (stmt, 4, engineerId);
+    sqlite3_bind_text(stmt, 5, assignedStatus.c_str(),   -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, inProgressStatus.c_str(), -1, SQLITE_TRANSIENT);
+
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    throwIfLockConflict(rc);
+    if (rc != SQLITE_DONE) {
+        throw DatabaseException(std::string("atomicResolveTicket step failed: ") + sqlite3_errmsg(db));
+    }
+    return sqlite3_changes(db) == 1;
 }

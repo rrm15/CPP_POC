@@ -54,6 +54,16 @@ public:
     void initializeSchema();        // Creates tables if they do not already exist
     void close();
 
+    // Expose the raw handle for test code that needs to manipulate SQLite
+    // connection settings (e.g. sqlite3_busy_timeout) directly.  Must not
+    // be used from production paths.
+    sqlite3* getRawHandle() const { return db; }
+
+    // Transaction support (use only when multiple related writes must be atomic)
+    bool beginTransaction();
+    bool commit();
+    bool rollback();
+
     // ---------------- User operations ----------------
     int addUser(const std::string& name, const std::string& username,
                 const std::string& password, const std::string& email,
@@ -67,12 +77,30 @@ public:
 
     // ---------------- Ticket operations ----------------
     int addTicket(const Ticket& ticket);                          // returns new ticket id
-    void updateTicket(const Ticket& ticket);                      // persists full ticket state
+    void updateTicket(const Ticket& ticket);                      // persists full ticket state (non-concurrent)
     Ticket getTicketById(int ticketId);
     std::vector<Ticket> getAllTickets();
     std::vector<Ticket> getTicketsByEmployee(int employeeId);
     std::vector<Ticket> getTicketsByEngineer(int engineerId);
     std::vector<Ticket> getTicketsByStatus(TicketStatus status);
+
+    // --- Atomic conditional writes (concurrent-safe) ---
+    // Each performs a conditional UPDATE with sqlite3_changes() inspection.
+    // Throws LockConflictException on SQLITE_BUSY/SQLITE_LOCKED.
+    // Returns false (zero rows changed) when the precondition was not met
+    // (stale data, wrong engineer, already assigned, etc.).
+
+    // Assigns ticket only when status=OPEN and assigned_engineer_id IS NULL.
+    bool atomicAssignTicket(int ticketId, int engineerId);
+
+    // Moves to IN_PROGRESS only when assigned_engineer_id=engineerId and
+    // current status=ASSIGNED.
+    bool atomicUpdateStatusInProgress(int ticketId, int engineerId);
+
+    // Resolves only when assigned_engineer_id=engineerId and status is
+    // ASSIGNED or IN_PROGRESS. Does not overwrite existing resolution text.
+    bool atomicResolveTicket(int ticketId, int engineerId,
+                             const std::string& resolutionNotes);
 
     // --- Resolved-ticket workflow separation ---
     // Filtering happens at the query level (SQL WHERE clauses) rather
