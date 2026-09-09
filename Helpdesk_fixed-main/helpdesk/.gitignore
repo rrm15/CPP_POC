@@ -24,6 +24,7 @@ Testing/
 *.so
 *.dylib
 *.dll
+*.idx
 
 # Executables
 *.exe
@@ -50,6 +51,3 @@ test_*.db
 .vs/
 .DS_Store
 Thumbs.db
-AI agent and IDE index caches
-.cache/
-*.idx
