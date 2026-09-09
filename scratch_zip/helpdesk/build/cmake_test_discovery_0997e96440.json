@@ -1,0 +1,117 @@
+{
+  "tests": 21,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TestDatabaseFixture",
+      "tests": 21,
+      "testsuite": [
+        {
+          "name": "SystemWorkflow_CompleteTicketLifecycleWithRestart",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/SystemWorkflowTest.cpp",
+          "line": 13
+        },
+        {
+          "name": "SystemWorkflow_TicketTypeMatrixAcrossFullSession",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/SystemWorkflowTest.cpp",
+          "line": 99
+        },
+        {
+          "name": "InvalidTicketType_UnknownStringIsRejected",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 19
+        },
+        {
+          "name": "InvalidTicketType_CannotBePersistedDirectly",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 26
+        },
+        {
+          "name": "EmptyFields_TicketTitleRejected",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 33
+        },
+        {
+          "name": "EmptyFields_UsernameAndEmailRejectedByAddUser",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 40
+        },
+        {
+          "name": "UnknownIds_GetTicketByIdThrowsNotFound",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "UnknownIds_GetUserByIdThrowsNotFound",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 56
+        },
+        {
+          "name": "UnknownIds_AssigningNonexistentEngineerIsRejectedAtDomainLevel",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 61
+        },
+        {
+          "name": "InvalidStatusTransitions_CannotModifyClosedTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 78
+        },
+        {
+          "name": "InvalidStatusTransitions_CannotResolveWithoutAssignment",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 91
+        },
+        {
+          "name": "InvalidStatusTransitions_CannotGiveFeedbackOnOpenTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 97
+        },
+        {
+          "name": "InvalidMenuInput_ReadIntSkipsGarbageAndReturnsFirstValidInteger",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 106
+        },
+        {
+          "name": "DatabaseConstraintViolations_DoNotCorruptState",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/InvalidInputResilienceTest.cpp",
+          "line": 116
+        },
+        {
+          "name": "EmployeeMenu_RaiseTicketThenViewThenLogout",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "EmployeeMenu_FeedbackFlowOnResolvedTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 76
+        },
+        {
+          "name": "EngineerMenu_UpdateStatusThenResolveThenViewResolved",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 102
+        },
+        {
+          "name": "EngineerMenu_CannotActOnTicketAssignedToSomeoneElse",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 137
+        },
+        {
+          "name": "AdminMenu_AssignTicketAddUserAndViewReports",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 165
+        },
+        {
+          "name": "AdminMenu_ViewResolvedTicketsShowsResolvedNotActive",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 202
+        },
+        {
+          "name": "AdminMenu_InvalidMenuChoiceIsRejectedWithoutCrashing",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/system\/ConsoleMenuWorkflowTest.cpp",
+          "line": 232
+        }
+      ]
+    }
+  ]
+}

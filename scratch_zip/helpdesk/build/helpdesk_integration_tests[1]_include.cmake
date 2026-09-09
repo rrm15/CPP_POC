@@ -1,0 +1,5 @@
+if(EXISTS "F:/Code/CPP_POC/scratch_zip/helpdesk/build/helpdesk_integration_tests[1]_tests.cmake")
+  include("F:/Code/CPP_POC/scratch_zip/helpdesk/build/helpdesk_integration_tests[1]_tests.cmake")
+else()
+  add_test(helpdesk_integration_tests_NOT_BUILT helpdesk_integration_tests_NOT_BUILT)
+endif()

@@ -1,0 +1,8 @@
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_core.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_unit_tests.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_system_tests.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/test.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/edit_cache.dir
+F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/rebuild_cache.dir

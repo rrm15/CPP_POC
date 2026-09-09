@@ -1,0 +1,146 @@
+{
+  "tests": 24,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TestDatabaseFixture",
+      "tests": 16,
+      "testsuite": [
+        {
+          "name": "TicketPersistenceScenario_CreateSaveReloadVerify",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 8
+        },
+        {
+          "name": "TicketTypePersistenceScenario_SurvivesReconnection",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 55
+        },
+        {
+          "name": "ResolvedTicketFiltering_AssignedQueryExcludesResolved",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/ResolvedTicketFilteringIntegrationTest.cpp",
+          "line": 12
+        },
+        {
+          "name": "ResolvedTicketFiltering_ResolvedQueryIncludesResolvedAndClosed",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/ResolvedTicketFilteringIntegrationTest.cpp",
+          "line": 48
+        },
+        {
+          "name": "ResolvedTicketFiltering_EmptyResolvedViewWhenNothingResolvedYet",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/ResolvedTicketFilteringIntegrationTest.cpp",
+          "line": 84
+        },
+        {
+          "name": "ResolutionWorkflowScenario_FullLifecycle",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/ResolutionWorkflowIntegrationTest.cpp",
+          "line": 8
+        },
+        {
+          "name": "ResolutionWorkflowScenario_FeedbackAfterResolution",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/ResolutionWorkflowIntegrationTest.cpp",
+          "line": 41
+        },
+        {
+          "name": "DuplicateUsername_ExactMatchRejected",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/DuplicateConstraintsIntegrationTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "DuplicateUsername_CaseInsensitiveVariantsRejected",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/DuplicateConstraintsIntegrationTest.cpp",
+          "line": 17
+        },
+        {
+          "name": "DuplicateUsername_EnforcedAtDatabaseLevelNotJustPreCheck",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/DuplicateConstraintsIntegrationTest.cpp",
+          "line": 31
+        },
+        {
+          "name": "DuplicateEmail_ExactMatchRejected",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/DuplicateConstraintsIntegrationTest.cpp",
+          "line": 47
+        },
+        {
+          "name": "DuplicateEmail_CaseInsensitiveVariantRejected",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/DuplicateConstraintsIntegrationTest.cpp",
+          "line": 55
+        },
+        {
+          "name": "DifferentUsernameAndEmailSucceeds",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/DuplicateConstraintsIntegrationTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "AuthenticationScenario_CreateLoginSuccessLoginFailure",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/AuthenticationIntegrationTest.cpp",
+          "line": 9
+        },
+        {
+          "name": "AuthenticationScenario_SeededAdminCanLogIn",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/AuthenticationIntegrationTest.cpp",
+          "line": 27
+        },
+        {
+          "name": "AuthenticationScenario_UsernameLoginIsCaseInsensitive",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/AuthenticationIntegrationTest.cpp",
+          "line": 32
+        }
+      ]
+    },
+    {
+      "name": "AllTicketTypes\/TicketTypePersistenceTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/0",
+          "value_param": "4-byte object <00-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/1",
+          "value_param": "4-byte object <01-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/2",
+          "value_param": "4-byte object <02-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/3",
+          "value_param": "4-byte object <03-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/4",
+          "value_param": "4-byte object <04-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/5",
+          "value_param": "4-byte object <05-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/6",
+          "value_param": "4-byte object <06-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        },
+        {
+          "name": "TicketTypeSurvivesSaveAndReload\/7",
+          "value_param": "4-byte object <07-00 00-00>",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/integration\/TicketPersistenceIntegrationTest.cpp",
+          "line": 30
+        }
+      ]
+    }
+  ]
+}

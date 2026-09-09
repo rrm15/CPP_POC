@@ -1,0 +1,81 @@
+# Build output directories
+build/
+build-*/
+bin/
+lib/
+out/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+colcon.pkg
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+*.ninja
+.ninja_deps
+.ninja_log
+
+# Compiled Object files & Libraries
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Executables
+*.exe
+*.out
+*.app
+*.elf
+
+# Debug / PDB files
+*.pdb
+*.ilk
+*.idb
+
+# Code Coverage & Profiling
+*.gcno
+*.gcda
+*.gcov
+coverage-report/
+*.info
+*.profraw
+*.profdata
+
+# Databases & Runtime Output
+*.db
+*.sqlite
+*.sqlite3
+helpdesk.db
+test_*.db
+
+# Logs & Diagnostics
+*.log
+logs/
+
+# Archives & Temporary Zip Bloat
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# IDE & Editor Configuration
+.vscode/
+.idea/
+.vs/
+*.user
+*.suo
+*.sln
+*.vcxproj*
+
+# OS Generated Files
+.DS_Store
+Thumbs.db

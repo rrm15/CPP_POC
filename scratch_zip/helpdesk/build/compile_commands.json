@@ -1,0 +1,128 @@
+[
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_core.dir\\src\\Ticket.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\src\\Ticket.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/src/Ticket.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_core.dir/src/Ticket.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_core.dir\\src\\User.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\src\\User.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/src/User.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_core.dir/src/User.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_core.dir\\src\\DatabaseManager.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\src\\DatabaseManager.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/src/DatabaseManager.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_core.dir/src/DatabaseManager.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_core.dir\\src\\PasswordInput.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\src\\PasswordInput.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/src/PasswordInput.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_core.dir/src/PasswordInput.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_core.dir\\src\\Validation.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\src\\Validation.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/src/Validation.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_core.dir/src/Validation.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk.dir\\app\\main.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\app\\main.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/app/main.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk.dir/app/main.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_unit_tests.dir\\tests\\test_main.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\test_main.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/test_main.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_unit_tests.dir/tests/test_main.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_unit_tests.dir\\tests\\unit\\DatabaseRepositoryTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\unit\\DatabaseRepositoryTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/unit/DatabaseRepositoryTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_unit_tests.dir/tests/unit/DatabaseRepositoryTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_unit_tests.dir\\tests\\unit\\PasswordInputTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\unit\\PasswordInputTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/unit/PasswordInputTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_unit_tests.dir/tests/unit/PasswordInputTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_unit_tests.dir\\tests\\unit\\TicketTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\unit\\TicketTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/unit/TicketTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_unit_tests.dir/tests/unit/TicketTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_unit_tests.dir\\tests\\unit\\ValidationTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\unit\\ValidationTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/unit/ValidationTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_unit_tests.dir/tests/unit/ValidationTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_integration_tests.dir\\tests\\test_main.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\test_main.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/test_main.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir/tests/test_main.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_integration_tests.dir\\tests\\integration\\AuthenticationIntegrationTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\integration\\AuthenticationIntegrationTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/integration/AuthenticationIntegrationTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir/tests/integration/AuthenticationIntegrationTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_integration_tests.dir\\tests\\integration\\DuplicateConstraintsIntegrationTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\integration\\DuplicateConstraintsIntegrationTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/integration/DuplicateConstraintsIntegrationTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir/tests/integration/DuplicateConstraintsIntegrationTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_integration_tests.dir\\tests\\integration\\ResolutionWorkflowIntegrationTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\integration\\ResolutionWorkflowIntegrationTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/integration/ResolutionWorkflowIntegrationTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir/tests/integration/ResolutionWorkflowIntegrationTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_integration_tests.dir\\tests\\integration\\ResolvedTicketFilteringIntegrationTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\integration\\ResolvedTicketFilteringIntegrationTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/integration/ResolvedTicketFilteringIntegrationTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir/tests/integration/ResolvedTicketFilteringIntegrationTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_integration_tests.dir\\tests\\integration\\TicketPersistenceIntegrationTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\integration\\TicketPersistenceIntegrationTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/integration/TicketPersistenceIntegrationTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_integration_tests.dir/tests/integration/TicketPersistenceIntegrationTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_system_tests.dir\\tests\\test_main.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\test_main.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/test_main.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_system_tests.dir/tests/test_main.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_system_tests.dir\\tests\\system\\ConsoleMenuWorkflowTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\system\\ConsoleMenuWorkflowTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/system/ConsoleMenuWorkflowTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_system_tests.dir/tests/system/ConsoleMenuWorkflowTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_system_tests.dir\\tests\\system\\InvalidInputResilienceTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\system\\InvalidInputResilienceTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/system/InvalidInputResilienceTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_system_tests.dir/tests/system/InvalidInputResilienceTest.cpp.obj"
+},
+{
+  "directory": "F:/Code/CPP_POC/scratch_zip/helpdesk/build",
+  "command": "C:\\msys64\\mingw64\\bin\\c++.exe -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IF:/Code/CPP_POC/scratch_zip/helpdesk/tests/fixtures -IF:/Code/CPP_POC/scratch_zip/helpdesk/include -g -std=gnu++17 -Wall -Wextra -o CMakeFiles\\helpdesk_system_tests.dir\\tests\\system\\SystemWorkflowTest.cpp.obj -c F:\\Code\\CPP_POC\\scratch_zip\\helpdesk\\tests\\system\\SystemWorkflowTest.cpp",
+  "file": "F:/Code/CPP_POC/scratch_zip/helpdesk/tests/system/SystemWorkflowTest.cpp",
+  "output": "F:/Code/CPP_POC/scratch_zip/helpdesk/build/CMakeFiles/helpdesk_system_tests.dir/tests/system/SystemWorkflowTest.cpp.obj"
+}
+]

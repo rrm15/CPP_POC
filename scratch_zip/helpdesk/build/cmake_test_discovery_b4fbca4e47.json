@@ -1,0 +1,368 @@
+{
+  "tests": 64,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "UsernameValidationTest",
+      "tests": 7,
+      "testsuite": [
+        {
+          "name": "AcceptsValidUsernames",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 8
+        },
+        {
+          "name": "RejectsInvalidCharacters",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 15
+        },
+        {
+          "name": "RejectsTooShort",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 23
+        },
+        {
+          "name": "AcceptsMinimumLength",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 28
+        },
+        {
+          "name": "RejectsTooLong",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "AcceptsMaximumLength",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 37
+        },
+        {
+          "name": "ThrowingVariantThrowsValidationException",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 42
+        }
+      ]
+    },
+    {
+      "name": "EmailValidationTest",
+      "tests": 11,
+      "testsuite": [
+        {
+          "name": "AcceptsValidEmails",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 56
+        },
+        {
+          "name": "RejectsMissingAtSign",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "RejectsMissingDomain",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 69
+        },
+        {
+          "name": "RejectsMissingLocalPart",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 73
+        },
+        {
+          "name": "RejectsMultipleAtSigns",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 77
+        },
+        {
+          "name": "RejectsEmbeddedSpace",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 81
+        },
+        {
+          "name": "RejectsEmptyString",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 85
+        },
+        {
+          "name": "RejectsDomainWithoutDot",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 89
+        },
+        {
+          "name": "RejectsEmptyLabels",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 93
+        },
+        {
+          "name": "RejectsLeadingOrTrailingWhitespace",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 100
+        },
+        {
+          "name": "ThrowingVariantThrowsValidationException",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/ValidationTest.cpp",
+          "line": 105
+        }
+      ]
+    },
+    {
+      "name": "TicketTest",
+      "tests": 16,
+      "testsuite": [
+        {
+          "name": "NewTicketStartsOpenAndUnassigned",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 8
+        },
+        {
+          "name": "EmptyTitleThrowsValidationException",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 22
+        },
+        {
+          "name": "AllTicketTypesRoundTripThroughStringConversion",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 32
+        },
+        {
+          "name": "UnknownTicketTypeStringThrows",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 44
+        },
+        {
+          "name": "AssignToMovesStatusToAssigned",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 51
+        },
+        {
+          "name": "AssignToRejectsInvalidEngineerId",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 58
+        },
+        {
+          "name": "UpdateStatusMovesThroughLifecycle",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 64
+        },
+        {
+          "name": "CannotChangeStatusOfClosedTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 71
+        },
+        {
+          "name": "CannotAssignAlreadyResolvedTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 80
+        },
+        {
+          "name": "ResolveRequiresAssignedEngineer",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 90
+        },
+        {
+          "name": "ResolveRequiresNonEmptyNotes",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 95
+        },
+        {
+          "name": "ResolveSetsStatusAndNotes",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 101
+        },
+        {
+          "name": "EngineerAssignmentIsRetainedThroughResolution",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 114
+        },
+        {
+          "name": "FeedbackRequiresResolvedOrClosedStatus",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 126
+        },
+        {
+          "name": "FeedbackRejectsOutOfRangeRating",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 131
+        },
+        {
+          "name": "FeedbackAcceptedOnResolvedTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/TicketTest.cpp",
+          "line": 139
+        }
+      ]
+    },
+    {
+      "name": "PasswordInputClassifyTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "PrintableCharsAreInsert",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 12
+        },
+        {
+          "name": "EnterKeysAreEnter",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 20
+        },
+        {
+          "name": "BackspaceAndDeleteAreBackspace",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 25
+        },
+        {
+          "name": "ControlCharsOtherThanNewlineAreIgnoredOrEnter",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 30
+        }
+      ]
+    },
+    {
+      "name": "PasswordInputApplyKeyTest",
+      "tests": 8,
+      "testsuite": [
+        {
+          "name": "InsertingCharactersAppendsToBufferAndPrintsMask",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 40
+        },
+        {
+          "name": "BackspaceRemovesLastCharacterFromBuffer",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 56
+        },
+        {
+          "name": "BackspaceWritesEraseSequenceToScreen",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 65
+        },
+        {
+          "name": "BackspaceOnEmptyBufferIsANoOp",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 74
+        },
+        {
+          "name": "InsertThenBackspaceThenInsertProducesCorrectBuffer",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 85
+        },
+        {
+          "name": "EnterFinalizesInputWithoutModifyingBuffer",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 100
+        },
+        {
+          "name": "EnterOnEmptyBufferYieldsEmptyPassword",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 111
+        },
+        {
+          "name": "UnrecognizedControlCharIsIgnoredCompletely",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 124
+        }
+      ]
+    },
+    {
+      "name": "PasswordInputReadTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "NonTtyFallbackReadsWholeLine",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 143
+        },
+        {
+          "name": "NonTtyFallbackOnEmptyStreamReturnsEmptyString",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 153
+        },
+        {
+          "name": "NonEmptyWrapperRePromptsUntilNonEmptyInput",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/PasswordInputTest.cpp",
+          "line": 163
+        }
+      ]
+    },
+    {
+      "name": "TestDatabaseFixture",
+      "tests": 15,
+      "testsuite": [
+        {
+          "name": "AddUserThenRetrieveById",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 10
+        },
+        {
+          "name": "GetUserByIdThrowsNotFoundForMissingUser",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 20
+        },
+        {
+          "name": "GetAllUsersIncludesSeededAdmin",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 24
+        },
+        {
+          "name": "GetUsersByRoleFiltersCorrectly",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 34
+        },
+        {
+          "name": "AddTicketThenRetrieveById",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 49
+        },
+        {
+          "name": "GetTicketByIdThrowsNotFoundForMissingTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 63
+        },
+        {
+          "name": "UpdateTicketPersistsChanges",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 67
+        },
+        {
+          "name": "UpdateTicketRejectsUnpersistedTicket",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 82
+        },
+        {
+          "name": "GetTicketsByEmployeeReturnsOnlyThatEmployeesTickets",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 90
+        },
+        {
+          "name": "GetTicketsByStatusFiltersCorrectly",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 105
+        },
+        {
+          "name": "ActiveEngineerQueryExcludesResolvedTickets",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 118
+        },
+        {
+          "name": "GetAllResolvedTicketsAggregatesAcrossEngineers",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 144
+        },
+        {
+          "name": "TicketCountByStatusReflectsData",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 164
+        },
+        {
+          "name": "TotalTicketCountIsAccurate",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 173
+        },
+        {
+          "name": "DataSurvivesReconnectingToSameDatabaseFile",
+          "file": "F:\/Code\/CPP_POC\/scratch_zip\/helpdesk\/tests\/unit\/DatabaseRepositoryTest.cpp",
+          "line": 183
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+# Build output directories
+build/
+build-*/
+bin/
+lib/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+*.ninja
+.ninja_deps
+.ninja_log
+
+# Compiled Object files & Libraries
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+
+# Executables
+*.exe
+*.out
+
+# Coverage & Profiling
+*.gcno
+*.gcda
+*.gcov
+coverage-report/
+*.info
+
+# Databases & Log Bloat
+*.db
+*.sqlite
+*.sqlite3
+helpdesk.db
+test_*.db
+*.log
+
+# IDE & OS Files
+.vscode/
+.idea/
+.vs/
+.DS_Store
+Thumbs.db
