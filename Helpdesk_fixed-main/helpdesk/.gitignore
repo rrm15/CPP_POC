@@ -1,8 +1,17 @@
 # Build output directories
-build/
+/build/
 build-*/
-bin/
-lib/
+/.cache/
+.idx
+
+# SQLite database files
+.db-wal
+.db-shm
+*.db
+*.sqlite
+*.sqlite3
+helpdesk.db
+test_*.db
 
 # CMake generated files
 CMakeCache.txt
@@ -24,26 +33,19 @@ Testing/
 *.so
 *.dylib
 *.dll
-*.idx
 
-# Executables
+# Executables & Logs
 *.exe
 *.out
+*.log
 
-# Coverage & Profiling
+# Coverage & Reports
 *.gcno
 *.gcda
 *.gcov
-coverage-report/
 *.info
-
-# Databases & Log Bloat
-*.db
-*.sqlite
-*.sqlite3
-helpdesk.db
-test_*.db
-*.log
+coverage/
+reports/
 
 # IDE & OS Files
 .vscode/

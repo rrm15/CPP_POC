@@ -36,13 +36,17 @@ public:
     // operational_metrics_YYYYMMDD_HHMMSS.csv, _1.csv, _2.csv, etc.
     static std::string resolveUniqueFilename(const std::string& outputDir, const std::string& timestamp);
 
+#ifndef HELPDESK_ADMIN_REPORT_DIR
+#define HELPDESK_ADMIN_REPORT_DIR "build/reports/admin"
+#endif
+
     // Writes the operational metrics snapshot to a CSV file.
     // Checks directory creation, file opening, writing, flushing, and final stream state.
     // Returns the path of the successfully written file.
     // Throws AppException on any file I/O failure.
     static std::string writeOperationalMetrics(
         const OperationalMetrics& metrics,
-        const std::string& outputDir = "build/reports/admin"
+        const std::string& outputDir = HELPDESK_ADMIN_REPORT_DIR
     );
 };
 

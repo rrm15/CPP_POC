@@ -687,7 +687,7 @@ bool DatabaseManager::atomicAssignTicket(int ticketId, int engineerId) {
         "UPDATE tickets "
         "SET assigned_engineer_id = ?, "
         "    status = ?, "
-        "    updated_at = CURRENT_TIMESTAMP "
+        "    updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime') "
         "WHERE id = ? "
         "  AND status = ? "
         "  AND assigned_engineer_id IS NULL;";
@@ -718,7 +718,7 @@ bool DatabaseManager::atomicUpdateStatusInProgress(int ticketId, int engineerId)
     const char* sql =
         "UPDATE tickets "
         "SET status = ?, "
-        "    updated_at = CURRENT_TIMESTAMP "
+        "    updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime') "
         "WHERE id = ? "
         "  AND assigned_engineer_id = ? "
         "  AND status = ?;";
@@ -752,7 +752,7 @@ bool DatabaseManager::atomicResolveTicket(int ticketId, int engineerId,
         "UPDATE tickets "
         "SET status = ?, "
         "    resolution_notes = ?, "
-        "    updated_at = CURRENT_TIMESTAMP "
+        "    updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime') "
         "WHERE id = ? "
         "  AND assigned_engineer_id = ? "
         "  AND status IN (?, ?);";

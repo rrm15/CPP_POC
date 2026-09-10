@@ -78,33 +78,28 @@ safeguards, and an automated test/diagnostics pipeline.
 
 ## 4. Architecture
 
-```
+```text
 helpdesk/
-├── include/                  Headers (declarations only)
-│   ├── Common.h                Enums (UserRole, TicketStatus, TicketPriority,
-│   │                           TicketType) + string conversions + custom exceptions
-│   ├── Validation.h             Username/email format validation (pure, no DB dependency)
-│   ├── PasswordInput.h          Masked password entry (termios), testable keystroke core
-│   ├── PasswordHasher.h         PBKDF2-HMAC-SHA256 hashing and verification interface
-│   ├── DateUtil.h                Timestamp helper
-│   ├── InputUtil.h                Console input helpers (readInt, menus, etc.)
-│   ├── Ticket.h                    Ticket entity (encapsulated domain model)
-│   ├── User.h                      Abstract User base + Employee/Engineer/Admin
-│   └── DatabaseManager.h            SQLite data-access layer (repository with atomic writes)
-├── src/                       Implementations of everything above
-│   (compiled into the helpdesk_core static library — no main())
+├── Makefile
+├── CMakeLists.txt
+├── README.md
+├── .gitignore
 ├── app/
 │   └── main.cpp                The only file with main(); login/registration flow
-├── tests/
-│   ├── fixtures/
-│   │   └── TestDatabaseFixture.h   Per-test throwaway SQLite file (never production DB)
-│   ├── unit/                  Ticket, Validation, PasswordInput, PasswordHasher, DatabaseManager unit tests
-│   ├── integration/           Multi-step scenarios against a real temporary SQLite database
-│   ├── system/                Full end-to-end workflows and interactive console-menu tests
-│   └── test_main.cpp          Shared GoogleTest entry point
-├── CMakeLists.txt             helpdesk_core lib + helpdesk exe + 3 test binaries
-├── Makefile                   make unit/integration/system/test/coverage/coverage-summary/...
-└── README.md
+├── include/                    Headers (declarations only)
+├── src/                        Implementations compiled into helpdesk_core static library
+├── tests/                      GoogleTest suites (unit, integration, system)
+└── build/                      Fully disposable build and artifact root (make clean)
+    ├── debug/                  Debug build executables and CTest registration
+    ├── coverage/               gcov coverage build binaries and .gcda instrumentation
+    ├── sanitize/               ASan + UBSan build binaries
+    ├── logs/                   Diagnostic tool output logs
+    │   ├── valgrind/
+    │   ├── helgrind/
+    │   └── cppcheck/
+    └── reports/                Generated system reports
+        ├── coverage.csv
+        └── admin/              Admin Operational Metrics CSV exports
 ```
 
 ### Layers
@@ -198,6 +193,17 @@ CREATE INDEX idx_tickets_employee ON tickets(employee_id);
 - **Seeded Admin**: The default administrator account (`admin` / `admin123`) is automatically seeded with a hashed PBKDF2 password upon initial schema creation.
 - **Legacy Databases**: Legacy databases storing plaintext passwords require database recreation or account password reset.
 
+### Timestamping & Notification Semantics
+
+- **Local Time Basis**: All persisted application timestamps (`created_at`, `updated_at`, `last_acknowledged_at`) use local time with fractional second precision (`YYYY-MM-DD HH:MM:SS.SSS`).
+- **Timestamp Standard**: Timestamps are generated using `strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')` in SQLite and monotonic millisecond-precision local time formatting in C++ (`DateUtil::nowString()`).
+- **Notification Delivery**: Notifications compare `updated_at > last_acknowledged_at` (or `created_at > last_acknowledged_at` for Admin unassigned tickets). Displayed notifications disappear upon acknowledgement and never reappear.
+- **Database Reset**: Existing development databases containing mixed UTC / local timestamps must be recreated via:
+  ```bash
+  make reset-db
+  make all
+  ```
+
 ## 6. Build Instructions
 
 ### Prerequisites
@@ -217,36 +223,35 @@ sudo apt-get update && sudo apt-get install -y \
 ### Plain build
 
 ```bash
-make            # configures build/ with CMake and compiles everything
-./build/helpdesk
+make            # configures build/debug with CMake and compiles everything
+./build/debug/helpdesk
 ```
 
 or directly with CMake:
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
-cmake --build build -- -j"$(nproc)"
-./build/helpdesk
+cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug
+cmake --build build/debug -- -j"$(nproc)"
+./build/debug/helpdesk
 ```
 
-### make targets
+### Make targets
 
 ```bash
-make            # build app + all three test binaries
-make run        # build, then launch the console app
-make unit           # build, run unit tests only
-make integration    # build, run integration tests only
-make system         # build, run system tests only
-make test            # build, run all three suites via ctest
-make coverage         # coverage build + full test run + native gcov terminal report
-make coverage-summary # reprint existing coverage report without rebuilding
-make valgrind          # run the interactive app under Memcheck
-make helgrind            # run the interactive app under Helgrind
-make valgrind-test        # run all 3 test suites under strict Memcheck
-make helgrind-test          # run system tests under Helgrind
-make cppcheck                 # static analysis
-make sanitize                  # ASan+UBSan build + run all tests
-make clean                      # remove all build dirs, logs, .db files
+make (all)           # configure and build Debug targets in build/debug/
+make run             # build and launch build/debug/helpdesk
+make test            # run all CTest test suites in build/debug/
+make test-count      # dynamically count registered CTest test cases
+make coverage        # clean/build build/coverage/, run tests, render gcov table, export build/reports/coverage.csv
+make coverage-summary# render coverage report from existing build/coverage artifacts
+make valgrind        # run helpdesk app under Valgrind Memcheck (logged to build/logs/valgrind/valgrind.log)
+make valgrind-test   # run test suites under Valgrind Memcheck (logged to build/logs/valgrind/)
+make helgrind        # run helpdesk app under Valgrind Helgrind (logged to build/logs/helgrind/helgrind.log)
+make helgrind-test   # run system test suite under Valgrind Helgrind (logged to build/logs/helgrind/system.log)
+make cppcheck        # static analysis logged to build/logs/cppcheck/cppcheck.log
+make sanitize        # build with ASan+UBSan in build/sanitize/ and run tests
+make clean           # remove the entire build/ directory (fully disposable)
+make help            # display target summary
 ```
 
 ## 7. Application Usage

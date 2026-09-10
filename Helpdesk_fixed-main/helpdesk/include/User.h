@@ -102,7 +102,11 @@ private:
     void viewResolvedTicketsFlow(DatabaseManager& db);
     void assignTicketFlow(DatabaseManager& db);
     void manageUsersFlow(DatabaseManager& db);
-    void reportsFlow(DatabaseManager& db, const std::string& outputDir = "build/reports/admin");
+#ifndef HELPDESK_ADMIN_REPORT_DIR
+#define HELPDESK_ADMIN_REPORT_DIR "build/reports/admin"
+#endif
+
+    void reportsFlow(DatabaseManager& db, const std::string& outputDir = HELPDESK_ADMIN_REPORT_DIR);
 };
 
 #endif // USER_H

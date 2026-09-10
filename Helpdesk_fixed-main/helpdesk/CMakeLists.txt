@@ -9,6 +9,9 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+add_compile_definitions(HELPDESK_ADMIN_REPORT_DIR="${CMAKE_SOURCE_DIR}/build/reports/admin")
+
+
 # ---------------------------------------------------------------------------
 # Optional instrumentation, off by default so a plain `cmake --build .`
 # produces a normal, fast binary. Toggle with -DHELPDESK_COVERAGE=ON or
