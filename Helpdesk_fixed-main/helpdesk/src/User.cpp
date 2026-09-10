@@ -4,6 +4,8 @@
 #include "Validation.h"
 #include "PasswordInput.h"
 #include "PasswordHasher.h"
+#include "CsvReportWriter.h"
+#include "DateUtil.h"
 #include <iostream>
 #include <iomanip>
 
@@ -337,21 +339,35 @@ void Admin::manageUsersFlow(DatabaseManager& db) {
     }
 }
 
-void Admin::reportsFlow(DatabaseManager& db) {
+void Admin::reportsFlow(DatabaseManager& db, const std::string& outputDir) {
+    OperationalMetrics metrics;
+    metrics.generatedAt = DateUtil::nowString();
+    metrics.totalTickets = db.getTotalTicketCount();
+    metrics.statusCounts = db.getTicketCountByStatus();
+    metrics.priorityCounts = db.getTicketCountByPriority();
+    metrics.averageRating = db.getAverageFeedbackRating();
+
     std::cout << "\n===== REPORTS & STATISTICS =====\n";
-    std::cout << "Total tickets: " << db.getTotalTicketCount() << "\n\n";
+    std::cout << "Total tickets: " << metrics.totalTickets << "\n\n";
 
     std::cout << "By Status:\n";
-    for (const auto& [status, count] : db.getTicketCountByStatus()) {
+    for (const auto& [status, count] : metrics.statusCounts) {
         std::cout << "  " << std::left << std::setw(12) << status << ": " << count << "\n";
     }
 
     std::cout << "\nBy Priority:\n";
-    for (const auto& [priority, count] : db.getTicketCountByPriority()) {
+    for (const auto& [priority, count] : metrics.priorityCounts) {
         std::cout << "  " << std::left << std::setw(12) << priority << ": " << count << "\n";
     }
 
-    double avgRating = db.getAverageFeedbackRating();
+    double avgRating = metrics.averageRating;
     std::cout << "\nAverage customer feedback rating: "
               << std::fixed << std::setprecision(2) << avgRating << " / 5.0\n";
+
+    try {
+        std::string reportPath = CsvReportWriter::writeOperationalMetrics(metrics, outputDir);
+        std::cout << "\nReport exported to: " << reportPath << "\n";
+    } catch (const std::exception& ex) {
+        std::cerr << "\nFailed to export report CSV: " << ex.what() << "\n";
+    }
 }

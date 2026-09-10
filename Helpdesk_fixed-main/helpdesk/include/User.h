@@ -102,7 +102,7 @@ private:
     void viewResolvedTicketsFlow(DatabaseManager& db);
     void assignTicketFlow(DatabaseManager& db);
     void manageUsersFlow(DatabaseManager& db);
-    void reportsFlow(DatabaseManager& db);
+    void reportsFlow(DatabaseManager& db, const std::string& outputDir = "build/reports/admin");
 };
 
 #endif // USER_H

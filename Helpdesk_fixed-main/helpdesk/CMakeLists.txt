@@ -36,6 +36,9 @@ add_library(helpdesk_core STATIC
     src/PasswordHasher.cpp
     src/PasswordInput.cpp
     src/Validation.cpp
+    src/DateUtil.cpp
+    src/InputUtil.cpp
+    src/CsvReportWriter.cpp
 )
 target_include_directories(helpdesk_core PUBLIC include ${SQLite3_INCLUDE_DIRS})
 target_link_libraries(helpdesk_core PUBLIC ${SQLite3_LIBRARIES} OpenSSL::Crypto)

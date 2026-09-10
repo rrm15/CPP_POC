@@ -58,6 +58,9 @@ safeguards, and an automated test/diagnostics pipeline.
   `sqlite3_bind_*` everywhere — no string-concatenated SQL)
 - Atomic conditional updates for assignment, status transition, and resolution
 - Reporting: ticket counts by status/priority, average feedback rating
+- **Admin Operational Metrics CSV export** (RFC 4180, collision-safe `_N.csv` suffixing)
+- **One-time persistent login notifications** per role (Admin/Engineer/Employee)
+- Dynamic coverage report with WEIGHTED TOTAL and SIMPLE AVERAGE columns
 
 ## 3. Technology Stack
 
@@ -301,12 +304,12 @@ Every ticket is classified at creation time:
 
 ## 10. Testing
 
-**133 tests across 3 suites, 100% passing** (`make test`):
+**150+ tests across 3 suites, 100% passing** (`make test`):
 
 | Suite        | Count | What it covers |
 |---------------|-------|------------------|
-| Unit           | 72    | `Ticket` behavior, `Validation`, `PasswordInput` keystroke logic, `PasswordHasher` PBKDF2 unit tests, `DatabaseManager` repository CRUD/filtering |
-| Integration      | 40    | Authentication scenarios, PBKDF2 persistence and reopen, concurrent-write races (two connections competing to assign), wrong-engineer protection, duplicate constraints, resolution workflows |
+| Unit           | 85+   | `Ticket` behavior, `Validation`, `PasswordInput` keystroke logic, `PasswordHasher` PBKDF2 unit tests, `DatabaseManager` repository CRUD/filtering, **`CsvReportWriter` RFC 4180 escaping and collision suffixing** |
+| Integration      | 50+   | Authentication, PBKDF2 persistence, concurrent-write races, duplicate constraints, resolution workflows, **login notification flows for Admin/Engineer/Employee, acknowledgment persistence across DB reopen** |
 | System             | 21    | Full lifecycle with service restart, ticket-type matrix in one session, invalid-input resilience, and console-menu-level tests driving `Employee`/`Engineer`/`Admin::showMenu()` |
 
 ```bash
@@ -336,26 +339,38 @@ make sanitize    # separate build-sanitize/ tree, -fsanitize=address,undefined
 ## 14. Coverage (Native GCC gcov)
 
 ```bash
-make coverage         # instrumented build, runs all test suites, prints terminal report
-make coverage-summary # reprints coverage summary without rebuilding
+make coverage         # full: clean instrumented build → run all suites → print table + write CSV
+make coverage-summary # reprint table and update CSV from existing build-coverage/ data
 ```
 
-Coverage is generated using native GCC `gcov` (`gcov -n`) without external script dependencies or HTML generators:
+Coverage is generated using native GCC `gcov` (`gcov -n`) without external script dependencies or HTML generators.
+The `coverage-summary` target **dynamically discovers** all compiled production `.cpp` files in
+`build-coverage/CMakeFiles/helpdesk_core.dir/` at report time:
 
 ```text
 ============================================================
 HELPDESK COVERAGE REPORT
 ============================================================
-SOURCE FILE LINE COVERAGE
+SOURCE FILE                      EXECUTED  TOTAL   COVERAGE
 ------------------------------------------------------------
-DatabaseManager.cpp Lines executed:...
-PasswordHasher.cpp Lines executed:...
-PasswordInput.cpp Lines executed:...
-Ticket.cpp Lines executed:...
-User.cpp Lines executed:...
-Validation.cpp Lines executed:...
+CsvReportWriter.cpp                    58     82     70.73%
+DatabaseManager.cpp                   421    594     70.88%
+DateUtil.cpp                            8     16     50.00%
+InputUtil.cpp                          31     48     64.58%
+PasswordHasher.cpp                     66     71     92.96%
+PasswordInput.cpp                      36     60     60.00%
+Ticket.cpp                             84     85     98.82%
+User.cpp                              196    250     78.40%
+Validation.cpp                         44     44    100.00%
+------------------------------------------------------------
+WEIGHTED TOTAL                        944   1250     75.52%
+SIMPLE AVERAGE                                       76.26%
 ============================================================
+Coverage CSV: build/reports/coverage.csv
 ```
+
+The CSV (`build/reports/coverage.csv`) has one data row per source file plus summary rows.
+No new build files need to be added when a new `.cpp` is added to `helpdesk_core` — discovery is automatic.
 
 ## 15. Security Considerations
 
@@ -372,24 +387,33 @@ Validation.cpp Lines executed:...
 |------|--------|
 | `include/PasswordHasher.h` / `src/PasswordHasher.cpp` | **New.** PBKDF2-HMAC-SHA256 password hashing and verification using OpenSSL `libcrypto`. |
 | `include/Common.h` | Custom exception hierarchy including `LockConflictException` and updated `AuthenticationException`. |
-| `include/DatabaseManager.h` / `src/DatabaseManager.cpp` | Prepared statements, `sqlite3_open_v2` with `SQLITE_OPEN_FULLMUTEX`, atomic conditional updates (`atomicAssignTicket`, `atomicUpdateStatusInProgress`, `atomicResolveTicket`), PBKDF2 integration on `addUser` and `authenticate`, seeded admin hash. |
-| `include/User.h` / `src/User.cpp` | `User::checkPassword()` integrated with `PasswordHasher`, atomic write workflows with `LockConflictException` handling. |
-| `app/main.cpp` | Masked login and registration with generic error reporting. |
-| `CMakeLists.txt` | Added `OpenSSL::Crypto` dependency, `PasswordHasher.cpp`, clean coverage options. |
-| `Makefile` | Native GCC `gcov` coverage reporting (`make coverage`, `make coverage-summary`), removed gcovr/HTML dependencies. |
-| `tests/unit/PasswordHasherTest.cpp` | **New.** Comprehensive unit tests for PBKDF2 hashing, random salting, verification, malformed input rejection, and bounds validation. |
-| `tests/integration/AuthenticationIntegrationTest.cpp` | Updated with PBKDF2 persistence, hash verification, reopen resilience, and seeded admin checks. |
+| `include/DatabaseManager.h` / `src/DatabaseManager.cpp` | Prepared statements, `sqlite3_open_v2` with `SQLITE_OPEN_FULLMUTEX`, atomic conditional updates, PBKDF2 integration, seeded admin hash. **New:** `user_notification_state` table schema, `getPendingNotifications`, `acknowledgeNotifications`, `recordInitialNotificationState`. |
+| `include/DateUtil.h` / `src/DateUtil.cpp` | **New.** Shared timestamp helpers (`nowString`, `nowFilenameTimestamp`). |
+| `include/InputUtil.h` / `src/InputUtil.cpp` | **New.** Console input helpers split into separate translation unit. |
+| `include/CsvReportWriter.h` / `src/CsvReportWriter.cpp` | **New.** `OperationalMetrics` struct + RFC 4180 CSV writer with collision-safe `_N.csv` suffixing and `fs::create_directories`. |
+| `include/User.h` / `src/User.cpp` | `User::checkPassword()` + `Admin::reportsFlow` now captures `OperationalMetrics`, displays terminal table, exports CSV via `CsvReportWriter`. |
+| `app/main.cpp` | Masked login/registration + **login notification display and acknowledgment** in `loginFlow`. |
+| `CMakeLists.txt` | Added `OpenSSL::Crypto`, `DateUtil.cpp`, `InputUtil.cpp`, `CsvReportWriter.cpp` to `helpdesk_core`. |
+| `Makefile` | Dynamic `coverage-summary` with EXECUTED/TOTAL/COVERAGE columns, WEIGHTED TOTAL, SIMPLE AVERAGE, and `build/reports/coverage.csv` export. |
+| `tests/unit/PasswordHasherTest.cpp` | **New.** Comprehensive unit tests for PBKDF2. |
+| `tests/unit/CsvReportWriterTest.cpp` | **New.** RFC 4180 escaping, collision suffixing, file writing, error cases. |
+| `tests/integration/AuthenticationIntegrationTest.cpp` | Updated with PBKDF2 persistence checks. |
+| `tests/integration/LoginNotificationIntegrationTest.cpp` | **New.** Admin/Engineer/Employee notification flows, acknowledgment persistence across DB reopen. |
 
 ## 17. Validation Checklist
 
-- [x] PBKDF2-HMAC-SHA256 password storage and verification (`include/PasswordHasher.h`, `src/PasswordHasher.cpp`)
+- [x] PBKDF2-HMAC-SHA256 password storage and verification
 - [x] OpenSSL libcrypto integration (`PKCS5_PBKDF2_HMAC`, `EVP_sha256`, `RAND_bytes`, `CRYPTO_memcmp`)
 - [x] Seeded Admin password hashed with PBKDF2
 - [x] Masked password entry preserved (`PasswordInput`)
 - [x] Prepared statements for all dynamic SQL operations
 - [x] Safe SQLite initialization (`sqlite3_open_v2` + `SQLITE_OPEN_FULLMUTEX`)
-- [x] Native GCC `gcov` terminal reporting (`make coverage`, `make coverage-summary`)
-- [x] 133/133 tests passing across unit, integration, and system suites
+- [x] Dynamic `gcov` coverage terminal report (EXECUTED / TOTAL / COVERAGE + WEIGHTED TOTAL + SIMPLE AVERAGE)
+- [x] `build/reports/coverage.csv` written by `make coverage` / `make coverage-summary`
+- [x] Admin Option 5 (Reports & Statistics) exports `build/reports/admin/operational_metrics_*.csv`
+- [x] Login notifications (Admin: unassigned OPEN tickets; Engineer: newly assigned; Employee: status changes)
+- [x] Notification acknowledgment persists in `user_notification_state` across DB reopens
+- [x] 150+ tests passing across unit, integration, and system suites
 - [x] Valgrind / ASan / UBSan / Cppcheck compatibility maintained
 
 ## 18. Future Enhancements

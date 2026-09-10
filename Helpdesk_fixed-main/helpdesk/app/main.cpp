@@ -69,6 +69,14 @@ static std::unique_ptr<User> loginFlow(DatabaseManager& db) {
         UserRecord rec = db.authenticate(username, password);
         std::cout << "Login successful. Welcome, " << rec.name
                   << " (" << roleToString(rec.role) << ")!\n";
+
+        // Display pending login notifications and mark acknowledged
+        std::vector<std::string> notifications = db.getPendingNotifications(rec.id, rec.role);
+        for (const auto& note : notifications) {
+            std::cout << note << "\n";
+        }
+        db.acknowledgeNotifications(rec.id);
+
         return makeUser(rec);
     } catch (const AuthenticationException& ex) {
         std::cout << ex.what() << "\n";

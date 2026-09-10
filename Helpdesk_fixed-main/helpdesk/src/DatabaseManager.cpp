@@ -139,6 +139,14 @@ void DatabaseManager::initializeSchema() {
             }
         }
 
+        execute(
+            "CREATE TABLE IF NOT EXISTS user_notification_state ("
+            "  user_id INTEGER PRIMARY KEY,"
+            "  last_acknowledged_at TEXT NOT NULL,"
+            "  FOREIGN KEY(user_id) REFERENCES users(id)"
+            ");"
+        );
+
         // Helpful indexes for the query patterns used throughout the
         // repository layer (assignment/status filtering, per-user
         // lookups).
@@ -770,3 +778,136 @@ bool DatabaseManager::atomicResolveTicket(int ticketId, int engineerId,
     }
     return sqlite3_changes(db) == 1;
 }
+
+// ---------------------------------------------------------------------
+// Notification operations
+// ---------------------------------------------------------------------
+
+std::vector<std::string> DatabaseManager::getPendingNotifications(int userId, UserRole role) {
+    std::string lastAck = "";
+    const char* ackSql = "SELECT last_acknowledged_at FROM user_notification_state WHERE user_id = ?;";
+    sqlite3_stmt* ackStmt = nullptr;
+    if (sqlite3_prepare_v2(db, ackSql, -1, &ackStmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(ackStmt, 1, userId);
+        if (sqlite3_step(ackStmt) == SQLITE_ROW) {
+            const unsigned char* txt = sqlite3_column_text(ackStmt, 0);
+            if (txt) {
+                lastAck = reinterpret_cast<const char*>(txt);
+            }
+        }
+        sqlite3_finalize(ackStmt);
+    }
+
+    std::vector<std::string> notifications;
+
+    if (role == UserRole::ADMIN) {
+        const char* sql = "SELECT COUNT(*) FROM tickets WHERE status = 'OPEN' AND assigned_engineer_id IS NULL AND created_at > ?;";
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            throw DatabaseException(std::string("Failed to prepare admin notification query: ") + sqlite3_errmsg(db));
+        }
+        sqlite3_bind_text(stmt, 1, lastAck.c_str(), -1, SQLITE_TRANSIENT);
+        int count = 0;
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            count = sqlite3_column_int(stmt, 0);
+        }
+        sqlite3_finalize(stmt);
+
+        if (count == 1) {
+            notifications.push_back("You have 1 new ticket awaiting assignment.");
+        } else if (count > 1) {
+            notifications.push_back("You have " + std::to_string(count) + " new tickets awaiting assignment.");
+        }
+    } else if (role == UserRole::ENGINEER) {
+        const char* sql = "SELECT COUNT(*) FROM tickets WHERE assigned_engineer_id = ? AND status IN ('ASSIGNED', 'IN_PROGRESS') AND updated_at > ?;";
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            throw DatabaseException(std::string("Failed to prepare engineer notification query: ") + sqlite3_errmsg(db));
+        }
+        sqlite3_bind_int(stmt, 1, userId);
+        sqlite3_bind_text(stmt, 2, lastAck.c_str(), -1, SQLITE_TRANSIENT);
+        int count = 0;
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            count = sqlite3_column_int(stmt, 0);
+        }
+        sqlite3_finalize(stmt);
+
+        if (count == 1) {
+            notifications.push_back("You have 1 newly assigned ticket.");
+        } else if (count > 1) {
+            notifications.push_back("You have " + std::to_string(count) + " newly assigned tickets.");
+        }
+    } else if (role == UserRole::EMPLOYEE) {
+        const char* sql = "SELECT id, status FROM tickets WHERE employee_id = ? AND updated_at > ? AND status IN ('IN_PROGRESS', 'RESOLVED', 'CLOSED') ORDER BY id;";
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            throw DatabaseException(std::string("Failed to prepare employee notification query: ") + sqlite3_errmsg(db));
+        }
+        sqlite3_bind_int(stmt, 1, userId);
+        sqlite3_bind_text(stmt, 2, lastAck.c_str(), -1, SQLITE_TRANSIENT);
+
+        struct StatusChange {
+            int id;
+            std::string status;
+        };
+        std::vector<StatusChange> changes;
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int tid = sqlite3_column_int(stmt, 0);
+            const unsigned char* s = sqlite3_column_text(stmt, 1);
+            changes.push_back({tid, s ? reinterpret_cast<const char*>(s) : ""});
+        }
+        sqlite3_finalize(stmt);
+
+        if (changes.size() == 1) {
+            if (changes[0].status == "IN_PROGRESS") {
+                notifications.push_back("Ticket #" + std::to_string(changes[0].id) + " is now in progress.");
+            } else if (changes[0].status == "RESOLVED") {
+                notifications.push_back("Ticket #" + std::to_string(changes[0].id) + " has been resolved.");
+            } else if (changes[0].status == "CLOSED") {
+                notifications.push_back("Ticket #" + std::to_string(changes[0].id) + " has been closed.");
+            }
+        } else if (changes.size() > 1) {
+            notifications.push_back("You have " + std::to_string(changes.size()) + " ticket status updates.");
+        }
+    }
+
+    return notifications;
+}
+
+void DatabaseManager::acknowledgeNotifications(int userId, const std::string& timestamp) {
+    std::string ts = timestamp.empty() ? DateUtil::nowString() : timestamp;
+    const char* sql =
+        "INSERT INTO user_notification_state (user_id, last_acknowledged_at) "
+        "VALUES (?, ?) "
+        "ON CONFLICT(user_id) DO UPDATE SET last_acknowledged_at = excluded.last_acknowledged_at;";
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw DatabaseException(std::string("Failed to prepare acknowledgeNotifications statement: ") + sqlite3_errmsg(db));
+    }
+    sqlite3_bind_int(stmt, 1, userId);
+    sqlite3_bind_text(stmt, 2, ts.c_str(), -1, SQLITE_TRANSIENT);
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    if (rc != SQLITE_DONE) {
+        throw DatabaseException(std::string("Failed to acknowledge notifications: ") + sqlite3_errmsg(db));
+    }
+}
+
+void DatabaseManager::recordInitialNotificationState(int userId, const std::string& timestamp) {
+    std::string ts = timestamp.empty() ? DateUtil::nowString() : timestamp;
+    const char* sql =
+        "INSERT OR IGNORE INTO user_notification_state (user_id, last_acknowledged_at) "
+        "VALUES (?, ?);";
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw DatabaseException(std::string("Failed to prepare recordInitialNotificationState statement: ") + sqlite3_errmsg(db));
+    }
+    sqlite3_bind_int(stmt, 1, userId);
+    sqlite3_bind_text(stmt, 2, ts.c_str(), -1, SQLITE_TRANSIENT);
+    int rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    if (rc != SQLITE_DONE) {
+        throw DatabaseException(std::string("Failed to record initial notification state: ") + sqlite3_errmsg(db));
+    }
+}
+

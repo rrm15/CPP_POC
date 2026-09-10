@@ -121,6 +121,16 @@ public:
     std::map<std::string, int> getTicketCountByPriority();
     double getAverageFeedbackRating();
     int getTotalTicketCount();
+
+    // ---------------- Notification operations ----------------
+    // Returns pending one-time login notifications for the authenticated user without marking them acknowledged.
+    std::vector<std::string> getPendingNotifications(int userId, UserRole role);
+
+    // Persists acknowledgment of all notifications up to timestamp (defaulting to current time).
+    void acknowledgeNotifications(int userId, const std::string& timestamp = "");
+
+    // Records initial notification acknowledgment watermark for newly registered/created user if absent.
+    void recordInitialNotificationState(int userId, const std::string& timestamp = "");
 };
 
 #endif // DATABASE_MANAGER_H
