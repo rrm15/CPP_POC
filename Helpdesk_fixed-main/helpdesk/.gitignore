@@ -53,3 +53,5 @@ reports/
 .vs/
 .DS_Store
 Thumbs.db
+
+!Makefile
